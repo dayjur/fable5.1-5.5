@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PIPSQUEAK character sheet</title>
+<style>html,body{margin:0;background:#141a22}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="characters.js"></script>
+<script>
+(function(){
+  var sheet = (location.hash || '#1').slice(1);
+  var cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  ctx.fillStyle = '#141a22'; ctx.fillRect(0, 0, cv.width, cv.height);
+
+  function label(x, y, t) {
+    ctx.save(); ctx.font = '12px sans-serif'; ctx.fillStyle = '#8a95a5'; ctx.textAlign = 'center';
+    ctx.fillText(t, x, y); ctx.restore();
+  }
+  function cross(x, y) {
+    ctx.save(); ctx.strokeStyle = 'rgba(255,120,80,0.6)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x - 5, y); ctx.lineTo(x + 5, y); ctx.moveTo(x, y - 5); ctx.lineTo(x, y + 5); ctx.stroke(); ctx.restore();
+  }
+  function at(x, y, fn, t) {
+    ctx.save(); ctx.translate(x, y); fn(); ctx.restore();
+    cross(x, y);
+    if (t) label(x, y + 14, t);
+  }
+  function title(x, y, t) {
+    ctx.save(); ctx.font = 'bold 14px sans-serif'; ctx.fillStyle = '#c8d0dc'; ctx.fillText(t, x, y); ctx.restore();
+  }
+  function dot(pt, col) {
+    ctx.save(); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  }
+  var E = {
+    neutral: { eyes: { open: 1, pupil: 0.55 }, brow: -0.25, mouth: { viseme: 'rest', open: 0, smile: -0.1 }, ears: 0.9 },
+    joy:     { eyes: { open: 1, pupil: 0.9 }, brow: 0.1, mouth: { viseme: 'rest', open: 0.3, smile: 1 }, ears: 1 },
+    fear:    { eyes: { open: 1, pupil: 0.05 }, brow: -1, mouth: { viseme: 'O', open: 0.6, smile: -0.6 }, ears: 0 },
+    angry:   { eyes: { open: 0.85, pupil: 0.4 }, brow: 1, mouth: { viseme: 'E', open: 0.4, smile: -0.5 }, ears: 1 },
+    blink:   { eyes: { open: 0, pupil: 0.5 }, brow: 0, mouth: { viseme: 'rest', open: 0, smile: 0.2 }, ears: 0.8 },
+    wonder:  { eyes: { open: 1, pupil: 1, lookX: 0.4, lookY: -0.6 }, brow: -0.4, mouth: { viseme: 'A', open: 0.5, smile: 0.3 }, ears: 1 },
+    shout:   { eyes: { open: 0.3, pupil: 0.5 }, brow: 1, mouth: { viseme: 'A', open: 1, smile: 0.2 }, ears: 1 },
+    sleepy:  { eyes: { open: 0.5, pupil: 0.6, lookY: 0.3 }, brow: -0.2, mouth: { viseme: 'rest', open: 0, smile: 0.3 }, ears: 0.6 }
+  };
+  function bat(kind, pose, expr, extra) {
+    var p = { kind: kind, pose: pose, scale: 1, flap: 0, breath: 0.3 };
+    var e = E[expr] || E.neutral;
+    for (var k in e) p[k] = e[k];
+    for (var k2 in (extra || {})) p[k2] = extra[k2];
+    return p;
+  }
+  var VIS = ['rest', 'A', 'E', 'O', 'M', 'F', 'L'];
+
+  if (sheet === '1') {
+    // ---------------- Row 1: Pip poses
+    title(16, 24, 'PIP — poses (scale 1)');
+    var y1 = 150, x = 70, step = 125;
+    var poses = [['perch', 'neutral'], ['perch', 'joy'], ['perch', 'fear'], ['crouch', 'fear'], ['hang', 'neutral'], ['glide', 'wonder'], ['fly', 'joy'], ['perch', 'blink'], ['perch', 'angry']];
+    poses.forEach(function (pp, i) {
+      var p = bat('pip', pp[0], pp[1], pp[0] === 'fly' ? { flap: 0.2 } : {});
+      var yy = pp[0] === 'hang' ? 40 : (pp[0] === 'fly' || pp[0] === 'glide') ? y1 - 50 : y1;
+      at(x + i * step, yy, function () { CHAR.drawBat(ctx, p); }, pp[0] + ' / ' + pp[1]);
+      if (i < 3) { var g = CHAR.gusAnchor(p); dot({ x: x + i * step + g.x, y: yy + g.y }, '#8dff6a'); var h = CHAR.headAnchor(p); dot({ x: x + i * step + h.mouthX, y: yy + h.mouthY }, '#a9d6ff'); }
+    });
+    // Pip visemes
+    title(1210, 24, 'PIP — visemes (scale 1, open 1)');
+    VIS.forEach(function (v, i) {
+      var p = bat('pip', 'perch', 'neutral', { mouth: { viseme: v, open: 1, smile: 0.1 } });
+      at(1250 + i * 95, y1, function () { CHAR.drawBat(ctx, p); }, v);
+    });
+    // ---------------- Row 2: Pip flap cycle, Nan flap cycle
+    title(16, 200, 'PIP — flap cycle (8 phases, scale 0.65)');
+    for (var i = 0; i < 8; i++) {
+      var p = bat('pip', 'fly', 'neutral', { flap: i / 8, scale: 0.65 });
+      at(70 + i * 112, 290, function () { CHAR.drawBat(ctx, p); }, 'flap ' + (i / 8).toFixed(3));
+    }
+    title(960, 200, 'NAN — flap cycle (8 phases, scale 0.45)');
+    for (var i = 0; i < 8; i++) {
+      var p = bat('nan', 'fly', 'neutral', { flap: i / 8, scale: 0.45 });
+      at(1020 + i * 120, 290, function () { CHAR.drawBat(ctx, p); }, 'flap ' + (i / 8).toFixed(3));
+    }
+    // ---------------- Row 3: Nan, Tobi, Mira, generic
+    title(16, 370, 'NAN — perch / hang (upside-down) / fear / joy / glide');
+    at(110, 540, function () { CHAR.drawBat(ctx, bat('nan', 'perch', 'neutral')); }, 'nan perch');
+    at(300, 375, function () { CHAR.drawBat(ctx, bat('nan', 'hang', 'neutral')); }, 'nan hang');
+    at(480, 540, function () { CHAR.drawBat(ctx, bat('nan', 'perch', 'fear')); }, 'nan fear');
+    at(660, 540, function () { CHAR.drawBat(ctx, bat('nan', 'perch', 'joy', { mouth: { viseme: 'A', open: 0.7, smile: 0.8 } })); }, 'nan joy A');
+    at(900, 470, function () { CHAR.drawBat(ctx, bat('nan', 'glide', 'neutral')); }, 'nan glide');
+    title(1100, 370, 'TOBI / MIRA / GENERIC / flipX');
+    at(1150, 540, function () { CHAR.drawBat(ctx, bat('tobi', 'perch', 'joy', { mouth: { viseme: 'E', open: 0.5, smile: 0.8 } })); }, 'tobi');
+    at(1290, 540, function () { CHAR.drawBat(ctx, bat('mira', 'perch', 'sleepy', { eyes: { open: 1, pupil: 0.5, lookX: -0.3 } })); }, 'mira');
+    at(1430, 540, function () { CHAR.drawBat(ctx, bat('generic', 'perch', 'neutral')); }, 'generic');
+    at(1570, 540, function () { CHAR.drawBat(ctx, bat('pip', 'perch', 'neutral', { flipX: true, lean: 0.5 })); }, 'pip flipX lean .5');
+    at(1700, 540, function () { CHAR.drawBat(ctx, bat('pip', 'perch', 'joy', { squash: 0.5 })); }, 'pip squash .5');
+    at(1830, 470, function () { CHAR.drawBat(ctx, bat('tobi', 'fly', 'angry', { flap: 0.6, scale: 0.8 })); }, 'tobi fly');
+    // ---------------- Row 4: flock, Gus, small scales
+    title(16, 620, 'FLOCK silhouettes (scales .08-.8 ; hanging rot=π folded=1)');
+    // (tints lightened on the sheet so the shapes are visible against the slate; default tint is #2a3340)
+    [0.08, 0.12, 0.2, 0.3, 0.5, 0.8].forEach(function (s, i) {
+      at(50 + i * 75, 690, function () { CHAR.drawFlockBat(ctx, { scale: s, flap: i / 6, tint: '#6b7a90' }); }, s + '');
+    });
+    [0.12, 0.2, 0.3, 0.5].forEach(function (s, i) {
+      at(520 + i * 55, 650, function () { CHAR.drawFlockBat(ctx, { scale: s, rot: Math.PI, flap: 0.0, folded: 1, tint: '#6b7a90' }); }, 'hang ' + s);
+    });
+    for (var i = 0; i < 8; i++) at(770 + i * 45, 690, function () { CHAR.drawFlockBat(ctx, { scale: 0.25, flap: i / 8, tint: '#8290a8' }); });
+    label(930, 735, 'flock flap cycle (.25)');
+    // a crowd
+    for (var i = 0; i < 200; i++) {
+      var sx = 1150 + ((i * 97) % 420), sy = 640 + ((i * 53) % 110), sc = 0.04 + ((i * 7) % 10) * 0.012;
+      ctx.save(); ctx.translate(sx, sy); CHAR.drawFlockBat(ctx, { scale: sc, flap: (i * 0.137) % 1, tint: '#4a5668' }); ctx.restore();
+    }
+    label(1350, 770, '200 flock bats (scale .04-.15)');
+    title(1600, 620, 'GUS — lit / unlit / fear / viseme A (scale 1.6)');
+    at(1640, 690, function () { CHAR.drawGus(ctx, { scale: 1.6, lit: 1, wiggle: 0.2, mouth: { viseme: 'rest', open: 0, smile: 0.6 } }); }, 'lit');
+    at(1740, 690, function () { CHAR.drawGus(ctx, { scale: 1.6, lit: 0, wiggle: 0.5, mouth: { viseme: 'rest', open: 0, smile: -0.3 }, eyes: { open: 1, lookX: -0.5 } }); }, 'unlit');
+    at(1840, 690, function () { CHAR.drawGus(ctx, { scale: 1.6, lit: 0.3, wiggle: 0.7, fear: 1, mouth: { viseme: 'O', open: 0.7, smile: -0.5 } }); }, 'fear');
+    at(1640, 780, function () { CHAR.drawGus(ctx, { scale: 1.6, lit: 1, wiggle: 0.9, mouth: { viseme: 'A', open: 1, smile: 0.5 } }); }, 'A');
+    at(1740, 780, function () { CHAR.drawGus(ctx, { scale: 1.6, lit: 1, wiggle: 0.1, mouth: { viseme: 'E', open: 0.8, smile: 0.8 }, eyes: { open: 0.5 } }); }, 'E half-lid');
+    at(1840, 780, function () { CHAR.drawGus(ctx, { scale: 0.8, lit: 1, wiggle: 0.3 }); }, 'scale .8');
+    // ---------------- Row 5: small scale readability + eyes only + pip with gus
+    title(16, 820, 'SCALE 0.6 — pip / nan / tobi / mira / pip fly / nan hang');
+    at(60, 920, function () { CHAR.drawBat(ctx, bat('pip', 'perch', 'neutral', { scale: 0.6 })); }, 'pip .6');
+    at(150, 920, function () { CHAR.drawBat(ctx, bat('nan', 'perch', 'neutral', { scale: 0.6 })); }, 'nan .6');
+    at(250, 920, function () { CHAR.drawBat(ctx, bat('tobi', 'perch', 'joy', { scale: 0.6 })); }, 'tobi .6');
+    at(340, 920, function () { CHAR.drawBat(ctx, bat('mira', 'perch', 'neutral', { scale: 0.6 })); }, 'mira .6');
+    at(440, 900, function () { CHAR.drawBat(ctx, bat('pip', 'fly', 'fear', { scale: 0.6, flap: 0.3 })); }, 'pip fly .6');
+    at(540, 840, function () { CHAR.drawBat(ctx, bat('nan', 'hang', 'neutral', { scale: 0.6 })); }, 'nan hang .6');
+    title(640, 820, 'DARK — eyes only (glowEyes 1): pip perch / fly / hang / blink 0.5 / nan');
+    ctx.save(); ctx.fillStyle = '#05070a'; ctx.fillRect(640, 830, 560, 240); ctx.restore();
+    at(700, 1000, function () { CHAR.drawBatEyesOnly(ctx, bat('pip', 'perch', 'fear', { glowEyes: 1 })); }, '');
+    at(820, 950, function () { CHAR.drawBatEyesOnly(ctx, bat('pip', 'fly', 'neutral', { glowEyes: 1, flap: 0.3 })); }, '');
+    at(940, 850, function () { CHAR.drawBatEyesOnly(ctx, bat('pip', 'hang', 'neutral', { glowEyes: 1 })); }, '');
+    at(1050, 1000, function () { CHAR.drawBatEyesOnly(ctx, bat('pip', 'perch', 'neutral', { glowEyes: 1, eyes: { open: 0.5, pupil: 0.8, lookX: 0.5 } })); }, '');
+    at(1150, 1000, function () { CHAR.drawBatEyesOnly(ctx, bat('nan', 'perch', 'neutral', { glowEyes: 0.6, scale: 0.6 })); }, '');
+    title(1230, 820, 'PIP + GUS at gusAnchor (perch / hang / fly / glowEyes .8)');
+    [['perch', 1300, 1000], ['hang', 1420, 850], ['fly', 1560, 950]].forEach(function (c) {
+      var p = bat('pip', c[0], 'wonder', { flap: 0.4, glowEyes: c[0] === 'fly' ? 0.8 : 0 });
+      at(c[1], c[2], function () {
+        CHAR.drawBat(ctx, p);
+        var g = CHAR.gusAnchor(p);
+        ctx.save(); ctx.translate(g.x, g.y); CHAR.drawGus(ctx, { scale: 0.8, lit: 1, wiggle: 0.3, rot: c[0] === 'hang' ? Math.PI : 0 }); ctx.restore();
+      }, c[0]);
+    });
+    at(1720, 1000, function () {
+      var p = bat('pip', 'perch', 'fear', { glowEyes: 1, breath: 1 });
+      ctx.fillStyle = '#05070a'; ctx.fillRect(-90, -150, 180, 170);
+      CHAR.drawBat(ctx, p);
+    }, 'glowEyes 1 lit');
+  } else {
+    // ---------------- SHEET 2: close-ups
+    title(16, 24, 'PIP close-ups (scale 3): neutral / joy / fear / angry / blink / wonder');
+    var exprs = ['neutral', 'joy', 'fear', 'angry', 'blink', 'wonder'];
+    exprs.forEach(function (e, i) {
+      at(170 + i * 320, 560, function () {
+        var p = bat('pip', 'perch', e, { scale: 3, flap: 0 });
+        CHAR.drawBat(ctx, p);
+      }, e);
+    });
+    title(16, 580, 'NAN hang close-up (scale 2) · NAN perch wry · TOBI grin · MIRA · pip E/O/L visemes (scale 2) · GUS (scale 4) · pip shout');
+    at(150, 600, function () { CHAR.drawBat(ctx, bat('nan', 'hang', 'neutral', { scale: 2, mouth: { viseme: 'rest', open: 0.1, smile: 0.3 } })); }, '');
+    at(400, 1040, function () { CHAR.drawBat(ctx, bat('nan', 'perch', 'neutral', { scale: 2, mouth: { viseme: 'rest', open: 0, smile: 0.4 }, eyes: { open: 1, pupil: 0.5, lookX: 0.3 } })); }, '');
+    at(620, 1040, function () { CHAR.drawBat(ctx, bat('tobi', 'perch', 'joy', { scale: 2, mouth: { viseme: 'rest', open: 0.2, smile: 0.9 }, brow: 0.5 })); }, '');
+    at(800, 1040, function () { CHAR.drawBat(ctx, bat('mira', 'perch', 'sleepy', { scale: 2, eyes: { open: 1, pupil: 0.5, lookX: -0.5 }, mouth: { viseme: 'rest', open: 0, smile: 0.3 } })); }, '');
+    ['E', 'O', 'L'].forEach(function (v, i) {
+      at(1000 + i * 180, 1040, function () { CHAR.drawBat(ctx, bat('pip', 'perch', 'neutral', { scale: 2, mouth: { viseme: v, open: 1, smile: 0.2 } })); }, '');
+    });
+    at(1600, 700, function () { CHAR.drawGus(ctx, { scale: 4, lit: 1, wiggle: 0.25, mouth: { viseme: 'A', open: 0.8, smile: 0.6 }, eyes: { lookX: 0.3, lookY: -0.2 } }); }, '');
+    at(1600, 820, function () { CHAR.drawGus(ctx, { scale: 4, lit: 0, wiggle: 0.6, fear: 1, mouth: { viseme: 'rest', open: 0, smile: -0.8 } }); }, '');
+    at(1780, 1040, function () { CHAR.drawBat(ctx, bat('pip', 'perch', 'shout', { scale: 2, lean: 0.6 })); }, '');
+  }
+  window.__done = true;
+})();
+</script>
+</body>
+</html>

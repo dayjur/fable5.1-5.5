@@ -1,0 +1,6 @@
+pipsqueak/work/
+pipsqueak/out/frames/
+pipsqueak/out/seg_*
+pipsqueak/out/*.wav
+node_modules/
+__pycache__/

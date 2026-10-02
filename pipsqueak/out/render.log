@@ -1,0 +1,6 @@
+worker 0: frame 0/1440 (0s)
+worker 3: frame 4320/5760 (1s)
+worker 1: frame 1440/2880 (1s)
+worker 2: frame 2880/4320 (0s)
+worker 2: frame 3000/4320 (33s)
+worker 0: frame 120/1440 (35s)

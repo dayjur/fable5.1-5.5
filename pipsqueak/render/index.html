@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PIPSQUEAK renderer</title>
+<style>
+  @font-face { font-family: 'Lilita'; src: url('fonts/LilitaOne.ttf'); }
+  @font-face { font-family: 'Nunito'; src: url('fonts/Nunito-Regular.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Nunito'; src: url('fonts/Nunito-Bold.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Fredoka'; src: url('fonts/Fredoka.ttf'); }
+  html, body { margin: 0; background: #000; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="film"></canvas>
+<script src="world.js"></script>
+<script src="engine.js"></script>
+<script src="characters.js"></script>
+<script src="sky.js"></script>
+<script src="scenes.js"></script>
+<script>
+  window.FILM_READY = false;
+  async function filmInit(data) {
+    // data = { script, lines }
+    await Promise.all([
+      document.fonts.load('80px Lilita'), document.fonts.load('400 40px Nunito'), document.fonts.load('700 40px Nunito'), document.fonts.load('40px Fredoka')
+    ]);
+    window.ENGINE.init(document.getElementById('film'));
+    window.SCENES.init(data);
+    window.FILM_READY = true;
+    return true;
+  }
+  function filmRender(i) { window.SCENES.renderFrame(i); return true; }
+  function filmFrameData(i) { window.SCENES.renderFrame(i); return document.getElementById('film').toDataURL('image/png'); }
+  function filmEvents() { return window.SCENES.events(); }
+</script>
+</body>
+</html>

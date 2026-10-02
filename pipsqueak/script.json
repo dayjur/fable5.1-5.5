@@ -1,0 +1,66 @@
+{
+  "title": "PIPSQUEAK",
+  "fps": 24,
+  "duration": 240,
+  "characters": {
+    "pip":  {"voice": "af_bella",  "pitch_semitones": 3.0,  "speed": 1.02, "color": "#a9d6ff", "note": "bat pup, shy, whispers; childlike"},
+    "nan":  {"voice": "bf_emma",   "pitch_semitones": -2.0, "speed": 0.92, "color": "#ffb347", "note": "grandmother, dry, warm, huge voice"},
+    "gus":  {"voice": "am_puck",   "pitch_semitones": 5.0,  "speed": 1.12, "color": "#8dff6a", "note": "glow-worm, nasal, fast, comic"},
+    "tobi": {"voice": "am_liam",   "pitch_semitones": 4.0,  "speed": 1.05, "color": "#ff7a3d", "note": "brash pup"},
+    "mira": {"voice": "af_jessica","pitch_semitones": 3.0,  "speed": 1.05, "color": "#ff5fb0", "note": "cool pup"}
+  },
+  "scenes": [
+    {"id": "cold_open",  "start": 0,   "end": 14,  "room": "roost"},
+    {"id": "roost",      "start": 14,  "end": 58,  "room": "roost"},
+    {"id": "exodus",     "start": 58,  "end": 80,  "room": "tunnel"},
+    {"id": "quiet_way",  "start": 80,  "end": 112, "room": "crack"},
+    {"id": "dark",       "start": 112, "end": 152, "room": "cathedral"},
+    {"id": "shout",      "start": 152, "end": 185, "room": "cathedral"},
+    {"id": "sky",        "start": 185, "end": 222, "room": "sky"},
+    {"id": "credits",    "start": 222, "end": 240, "room": "none"}
+  ],
+  "lines": [
+    {"id": "L00", "t": 5.5,   "who": "nan",  "text": "PIP!", "style": "shout", "room": "roost"},
+
+    {"id": "L01", "t": 15.0,  "who": "nan",  "text": "Sing out, pups. The dark doesn't bite. It just needs introducing.", "room": "roost"},
+    {"id": "L02", "t": 20.5,  "who": "tobi", "text": "HAAA!", "style": "shout", "room": "roost"},
+    {"id": "L03", "t": 22.2,  "who": "mira", "text": "HEY-O!", "style": "shout", "room": "roost"},
+    {"id": "L04", "t": 24.5,  "who": "nan",  "text": "Pip.", "room": "roost"},
+    {"id": "L05", "t": 26.0,  "who": "pip",  "text": "Hi.", "style": "whisper", "room": "roost"},
+    {"id": "L06", "t": 28.0,  "who": "tobi", "text": "She said hi to a rock.", "room": "roost"},
+    {"id": "L07", "t": 31.0,  "who": "nan",  "text": "Enough.", "room": "roost"},
+    {"id": "L08", "t": 32.6,  "who": "nan",  "text": "Pip. What are you afraid of?", "room": "roost"},
+    {"id": "L09", "t": 35.6,  "who": "pip",  "text": "What if it answers?", "style": "whisper", "room": "roost"},
+    {"id": "L10", "t": 38.0,  "who": "nan",  "text": "Oh, chick. That's the whole point.", "room": "roost"},
+    {"id": "L11", "t": 41.0,  "who": "gus",  "text": "She doesn't need to shout. She's got me. Gus. Professional lantern.", "room": "roost"},
+    {"id": "L12", "t": 45.6,  "who": "nan",  "text": "You're a worm.", "room": "roost"},
+    {"id": "L13", "t": 47.2,  "who": "gus",  "text": "I'm a worm with a career.", "room": "roost"},
+    {"id": "L14", "t": 49.3,  "who": "nan",  "text": "Tonight is first flight. The Long Throat, then the sky. Follow the song, and you won't get lost.", "room": "roost"},
+
+    {"id": "L15", "t": 71.0,  "who": "pip",  "text": "They're so loud.", "style": "whisper", "room": "tunnel"},
+    {"id": "L16", "t": 73.0,  "who": "gus",  "text": "Loud is overrated. Let's take the scenic route. I'll light it. I light everything.", "room": "tunnel"},
+    {"id": "L17", "t": 77.3,  "who": "pip",  "text": "Okay. The quiet way.", "style": "whisper", "room": "tunnel"},
+
+    {"id": "L18", "t": 90.0,  "who": "gus",  "text": "Was that weather? I don't do weather.", "room": "crack"},
+    {"id": "L19", "t": 98.0,  "who": "gus",  "text": "Oh no. Oh no no no. Pip, I go out when I'm wet. Also when I'm scared. I'm both.", "room": "crack"},
+
+    {"id": "L20", "t": 113.5, "who": "pip",  "text": "Gus?", "style": "whisper", "room": "cathedral"},
+    {"id": "L21", "t": 115.8, "who": "gus",  "text": "I'm here. I'm just not... here, here.", "room": "cathedral"},
+    {"id": "L22", "t": 122.0, "who": "pip",  "text": "I saw it. There's a way up. It's high.", "style": "whisper", "room": "cathedral"},
+    {"id": "L23", "t": 126.0, "who": "gus",  "text": "Then say so. Say it big enough to see it.", "room": "cathedral"},
+    {"id": "L24", "t": 130.0, "who": "pip",  "text": "I can't.", "style": "whisper", "room": "cathedral"},
+    {"id": "L25", "t": 132.0, "who": "gus",  "text": "Pip. I am a worm who is currently nothing. And I am asking you. What if it answers?", "room": "cathedral"},
+    {"id": "L26", "t": 141.0, "who": "pip",  "text": "One.", "style": "whisper", "room": "cathedral"},
+    {"id": "L27", "t": 143.2, "who": "pip",  "text": "Two.", "style": "whisper", "room": "cathedral"},
+    {"id": "L28", "t": 145.4, "who": "pip",  "text": "Three.", "room": "cathedral"},
+
+    {"id": "L29", "t": 152.0, "who": "pip",  "text": "HEEEEEEY!", "style": "bigshout", "room": "cathedral"},
+    {"id": "L30", "t": 170.0, "who": "gus",  "text": "I'm back! I was never gone! That's a lie, I was extremely gone!", "room": "cathedral"},
+
+    {"id": "L31", "t": 193.0, "who": "nan",  "text": "There she is.", "room": "sky"},
+    {"id": "L32", "t": 196.0, "who": "pip",  "text": "Was that loud?", "style": "hoarse", "room": "sky"},
+    {"id": "L33", "t": 198.6, "who": "nan",  "text": "Pipsqueak. I heard you from the moon.", "room": "sky"},
+    {"id": "L34", "t": 205.0, "who": "pip",  "text": "HELLO!", "style": "bigshout", "room": "sky"},
+    {"id": "L35", "t": 216.0, "who": "nan",  "text": "Told you. It answers.", "room": "sky"}
+  ]
+}
