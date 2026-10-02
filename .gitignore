@@ -1,6 +1,7 @@
 pipsqueak/work/
-pipsqueak/out/frames/
-pipsqueak/out/seg_*
-pipsqueak/out/*.wav
+pipsqueak/out/*
+!pipsqueak/out/pipsqueak_1080p_web.mp4
+!pipsqueak/out/qc/
+pipsqueak/out/qc/t*.png
 node_modules/
 __pycache__/
